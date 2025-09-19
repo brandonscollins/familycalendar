@@ -1,0 +1,585 @@
+/* =========================================
+   Strategicli Family Calendar - Main Styles
+   ========================================= */
+
+/* =========================================
+   1. CSS Variables & Base Styles
+   ========================================= */
+
+/* Base calendar wrapper and theme variables */
+.sfc-calendar-wrapper {
+    /* Light theme colors (default) */
+    --sfc-bg: #ffffff;
+    --sfc-text: #333333;
+    --sfc-border: #e0e0e0;
+    --sfc-today-bg: #fff3cd;
+    --sfc-hover: #f5f5f5;
+    --sfc-header-bg: #f8f9fa;
+    --sfc-primary: #3788d8;
+
+    /* Layout */
+    position: relative;
+    margin: auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    box-sizing: border-box;
+
+    /* Flexible height */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 500px;
+}
+
+/* Apply box-sizing to all child elements */
+.sfc-calendar-wrapper * {
+    box-sizing: border-box;
+}
+
+/* Dark theme overrides */
+.sfc-theme-dark {
+    --sfc-bg: #1a1a1a;
+    --sfc-text: #ffffff;
+    --sfc-border: #404040;
+    --sfc-today-bg: #3a3a3a;
+    --sfc-hover: #2a2a2a;
+    --sfc-header-bg: #2a2a2a;
+}
+
+/* =========================================
+   2. Calendar Header & Navigation
+   ========================================= */
+
+/* Calendar header container */
+.sfc-calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 50px;
+    background: var(--sfc-header-bg);
+    border: 1px solid var(--sfc-border);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    position: relative;
+}
+
+/* Month/Year display */
+.sfc-current-month-year {
+    margin: 0;
+    font-size: 1.5em;
+    font-weight: 600;
+    color: var(--sfc-text);
+    text-align: center;
+}
+
+/* Navigation buttons base styles */
+.sfc-nav-button,
+.sfc-refresh-button {
+    background: var(--sfc-bg);
+    border: 1px solid var(--sfc-border);
+    border-radius: 4px;
+    padding: 8px;
+    cursor: pointer;
+    color: var(--sfc-text);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.sfc-nav-button:hover,
+.sfc-refresh-button:hover {
+    background: var(--sfc-hover);
+}
+
+/* Navigation button positioning */
+.sfc-prev-month {
+    left: 15px;
+}
+
+.sfc-next-month {
+    right: 15px;
+}
+
+.sfc-refresh-button {
+    right: 60px;
+}
+
+/* Dashicons sizing */
+.sfc-nav-button .dashicons,
+.sfc-refresh-button .dashicons {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+}
+
+/* =========================================
+   3. Calendar Grid Layout
+   ========================================= */
+
+/* Calendar content container */
+.sfc-calendar-content {
+    background: var(--sfc-bg);
+    border: 1px solid var(--sfc-border);
+    border-top: none;
+    transition: opacity 0.3s;
+    overflow: hidden;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Loading state */
+.sfc-calendar-content[style*="opacity: 0.5"] {
+    pointer-events: none;
+}
+
+/* Calendar grid wrapper */
+.sfc-calendar-grid {
+    padding: 15px;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =========================================
+   4. Calendar Days Grid
+   ========================================= */
+
+/* Weekday headers */
+.sfc-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    margin-bottom: 10px;
+    background: var(--sfc-border);
+    width: 100%;
+}
+
+.sfc-weekday {
+    background: var(--sfc-bg);
+    text-align: center;
+    font-weight: 600;
+    padding: 10px 5px;
+    color: var(--sfc-text);
+    font-size: 0.9em;
+    text-transform: uppercase;
+}
+
+/* Days grid */
+.sfc-days {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background: var(--sfc-border);
+    width: 100%;
+    grid-auto-rows: 1fr;
+    min-height: 400px;
+}
+
+/* Individual day cells */
+.sfc-day {
+    background: var(--sfc-bg);
+    min-height: 100px;
+    padding: 8px;
+    position: relative;
+    transition: background-color 0.2s;
+    overflow: hidden;
+    width: 100%;
+}
+
+.sfc-day:hover:not(.sfc-other-month) {
+    background: var(--sfc-hover);
+}
+
+.sfc-day.sfc-today {
+    background: var(--sfc-today-bg);
+}
+
+.sfc-day.sfc-other-month {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+/* Day number */
+.sfc-day-number {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--sfc-text);
+    font-size: 0.9em;
+}
+
+/* =========================================
+   5. Events Styling
+   ========================================= */
+
+/* Events container */
+.sfc-day-events {
+    font-size: 0.75em;
+    width: 100%;
+}
+
+/* Base event styles */
+.sfc-event {
+    padding: 2px 6px;
+    margin-bottom: 2px;
+    border-radius: 3px;
+    color: white;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    transition: all 0.2s;
+}
+
+.sfc-event:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Event time display */
+.sfc-event-time {
+    font-size: 0.9em;
+    opacity: 0.9;
+    margin-right: 4px;
+}
+
+.sfc-event-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline;
+}
+
+/* Hidden events (beyond display limit) */
+.sfc-event-hidden {
+    display: none;
+}
+
+/* =========================================
+   6. Special Event Types
+   ========================================= */
+
+/* All-day events */
+.sfc-all-day-event {
+    border-left: 6px solid rgba(0, 0, 0, 0.2);
+    font-weight: 500;
+    padding-left: 8px !important;
+    background-image: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0) 100%);
+}
+
+.sfc-all-day-event .sfc-event-title {
+    font-weight: 500;
+}
+
+/* Dark theme all-day events */
+.sfc-theme-dark .sfc-all-day-event {
+    border-left-color: rgba(255, 255, 255, 0.3);
+    background-image: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0) 100%);
+}
+
+/* --- Start of Changed Block --- */
+/* The following section has been updated for better multi-day event styling. */
+
+/* Multi-day events base */
+.sfc-multi-day-event {
+    /* We no longer use negative margins, so events align correctly. */
+    position: relative;
+}
+
+/* First day of a multi-day event */
+.sfc-multi-day-event.sfc-first-day {
+    /* Rounded corners on the left side only */
+    border-radius: 10px 0 0 10px;
+}
+
+/* A middle day of a multi-day event */
+.sfc-multi-day-event:not(.sfc-first-day):not(.sfc-last-day) {
+    /* No rounded corners to create a seamless block */
+    border-radius: 0;
+}
+
+/* Last day of a multi-day event */
+.sfc-multi-day-event.sfc-last-day {
+    /* Rounded corners on the right side only */
+    border-radius: 0 10px 10px 0;
+}
+
+/* An event that is technically multi-day but starts and ends on the same day. */
+/* This ensures it gets normal, fully-rounded corners. */
+.sfc-multi-day-event.sfc-first-day.sfc-last-day {
+    border-radius: 3px;
+}
+/* --- End of Changed Block --- */
+
+
+/* =========================================
+   7. More Events Button & Expanded View
+   ========================================= */
+
+/* More events button */
+.sfc-more-events {
+    color: var(--sfc-text);
+    font-style: italic;
+    opacity: 0.7;
+    padding: 4px 6px;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: all 0.2s;
+    border-radius: 3px;
+    text-align: center;
+    margin-top: 2px;
+}
+
+.sfc-more-events:hover {
+    background: var(--sfc-hover);
+    opacity: 1;
+}
+
+/* Show less text */
+.sfc-less-text {
+    font-weight: 500;
+    color: var(--sfc-primary);
+}
+
+/* Expanded day state */
+.sfc-day.sfc-expanded {
+    position: relative;
+    z-index: 10;
+}
+
+.sfc-day.sfc-expanded .sfc-day-events {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    background: var(--sfc-bg);
+    border: 2px solid var(--sfc-primary);
+    border-radius: 4px;
+    padding: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 100;
+    min-width: 200px;
+}
+
+/* Day number in expanded view */
+.sfc-day.sfc-expanded .sfc-day-number {
+    position: relative;
+    z-index: 101;
+    background: var(--sfc-bg);
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-bottom: 4px;
+}
+
+/* Show hidden events in expanded view */
+.sfc-day.sfc-expanded .sfc-event-hidden {
+    display: block !important;
+}
+
+/* Custom scrollbar for expanded view */
+.sfc-day.sfc-expanded .sfc-day-events::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sfc-day.sfc-expanded .sfc-day-events::-webkit-scrollbar-track {
+    background: var(--sfc-hover);
+    border-radius: 3px;
+}
+
+.sfc-day.sfc-expanded .sfc-day-events::-webkit-scrollbar-thumb {
+    background: var(--sfc-border);
+    border-radius: 3px;
+}
+
+.sfc-day.sfc-expanded .sfc-day-events::-webkit-scrollbar-thumb:hover {
+    background: var(--sfc-text);
+    opacity: 0.5;
+}
+
+/* =========================================
+   8. Calendar Legend
+   ========================================= */
+
+.sfc-calendar-legend {
+    padding: 15px;
+    background: var(--sfc-bg);
+    border: 1px solid var(--sfc-border);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+}
+
+.sfc-legend-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.sfc-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sfc-legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.sfc-legend-name {
+    color: var(--sfc-text);
+    font-size: 0.9em;
+}
+
+/* =========================================
+   9. Tooltip
+   ========================================= */
+
+.sfc-tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    z-index: 10000;
+    pointer-events: none;
+    max-width: 250px;
+    line-height: 1.4;
+}
+
+/* WordPress admin bar compatibility */
+.admin-bar .sfc-tooltip {
+    margin-top: 32px;
+}
+
+/* =========================================
+   10. Responsive Design
+   ========================================= */
+
+/* Tablet breakpoint */
+@media (max-width: 768px) {
+    .sfc-calendar-wrapper {
+        margin: 10px;
+    }
+
+    .sfc-calendar-header {
+        padding: 10px 40px;
+    }
+
+    .sfc-refresh-button {
+        right: 45px;
+    }
+
+    .sfc-current-month-year {
+        font-size: 1.2em;
+    }
+
+    .sfc-days {
+        grid-auto-rows: minmax(80px, auto);
+    }
+
+    .sfc-day {
+        min-height: 80px;
+        padding: 5px;
+    }
+
+    .sfc-event {
+        font-size: 0.9em;
+        padding: 1px 4px;
+    }
+
+    .sfc-event-time {
+        display: none;
+    }
+
+
+    .sfc-weekday {
+        font-size: 0.8em;
+        padding: 8px 2px;
+    }
+
+    /* Modal-style expanded view on mobile */
+    .sfc-day.sfc-expanded .sfc-day-events {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 350px;
+        max-height: 70vh;
+    }
+
+    /* Overlay for mobile expanded view */
+    .sfc-day.sfc-expanded::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 99;
+    }
+}
+
+/* Mobile breakpoint */
+@media (max-width: 480px) {
+    .sfc-days {
+        grid-auto-rows: minmax(60px, auto);
+    }
+
+    .sfc-day {
+        min-height: 60px;
+        padding: 3px;
+    }
+
+    .sfc-day-number {
+        font-size: 0.8em;
+        margin-bottom: 2px;
+    }
+
+    .sfc-event {
+        padding: 1px 3px;
+        font-size: 0.8em;
+    }
+
+    .sfc-event-title {
+        font-size: 0.9em;
+    }
+}
+
+/* =========================================
+   11. Print Styles
+   ========================================= */
+
+@media print {
+    .sfc-nav-button,
+    .sfc-refresh-button {
+        display: none !important;
+    }
+
+    .sfc-calendar-wrapper {
+        max-width: 100%;
+        margin: 0;
+    }
+
+    .sfc-day {
+        min-height: 60px;
+    }
+}
